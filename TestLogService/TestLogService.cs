@@ -53,16 +53,18 @@ namespace TestLogService
         public TestLogService()
         {
             InitializeComponent();
+            eventLog1 = new System.Diagnostics.EventLog();
+            if (!System.Diagnostics.EventLog.SourceExists("MySource"))
+            {
+                System.Diagnostics.EventLog.CreateEventSource(
+                    "MySource", "MyNewLog");
+            }
+            eventLog1.Source = "MySource";
+            eventLog1.Log = "MyNewLog";
         }
 
         protected override void OnStart(string[] args)
         {
-            // Update the service state to Start Pending.
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
-            serviceStatus.dwWaitHint = 100000;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-
             eventLog1.WriteEntry("In OnStart.");
 
             // Set up a timer that triggers every minute.
@@ -70,6 +72,12 @@ namespace TestLogService
             timer.Interval = 60000; // 60 seconds
             timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
             timer.Start();
+
+            // Update the service state to Start Pending.
+            ServiceStatus serviceStatus = new ServiceStatus();
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
+            serviceStatus.dwWaitHint = 100000;
+            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             // Update the service state to Running.
             serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
