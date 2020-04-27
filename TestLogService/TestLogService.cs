@@ -57,10 +57,10 @@ namespace TestLogService
             if (!System.Diagnostics.EventLog.SourceExists("MySource"))
             {
                 System.Diagnostics.EventLog.CreateEventSource(
-                    "MySource", "MyNewLog");
+                    "MySource", "TestLogService");
             }
             eventLog1.Source = "MySource";
-            eventLog1.Log = "MyNewLog";
+            eventLog1.Log = "TestLogService";
         }
 
         protected override void OnStart(string[] args)
