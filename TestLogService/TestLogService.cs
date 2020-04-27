@@ -48,6 +48,24 @@ namespace TestLogService
         {
             // TODO: Insert monitoring activities here.
             eventLog1.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
+
+            var psi = new ProcessStartInfo()
+            {
+                FileName = "C:\\Users\\adamd\\Documents\\GitHub\\TestLogService\\PythonFiles\\dist\\test.exe", //path to your *.exe
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true //no window, you can't show it anyway
+            };
+            var p = Process.Start(psi);
+
+            // call log executable
+            /*Process proc = new Process();
+            proc.StartInfo.FileName = "C:\\Users\\adamd\\Documents\\GitHub\\TestLogService\\PythonFiles\\dist\\test.exe";
+            proc.StartInfo.UseShellExecute = true;
+            proc.StartInfo.Verb = "runas";
+            proc.Start();*/
         }
 
         public TestLogService()
@@ -57,10 +75,10 @@ namespace TestLogService
             if (!System.Diagnostics.EventLog.SourceExists("MySource"))
             {
                 System.Diagnostics.EventLog.CreateEventSource(
-                    "MySource", "TestLogService");
+                    "MySource", "MyNewLog");
             }
             eventLog1.Source = "MySource";
-            eventLog1.Log = "TestLogService";
+            eventLog1.Log = "MyNewLog";
         }
 
         protected override void OnStart(string[] args)
@@ -69,7 +87,7 @@ namespace TestLogService
 
             // Set up a timer that triggers every minute.
             Timer timer = new Timer();
-            timer.Interval = 60000; // 60 seconds
+            timer.Interval = 20000; // 20 seconds
             timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
             timer.Start();
 
